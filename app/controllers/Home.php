@@ -15,7 +15,13 @@ class Home
 		$this->view('home');
 	}
 	public function new(){
-		$this->view('new');
+		$data = [
+			"first"=>"Tachera W",
+			"second"=>"Mwera W",
+			"third"=>"Sasi W",
+			"last"=>"Sky W"
+		];
+		$this->renderJSON($data);
 	}
 
 }

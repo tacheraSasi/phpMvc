@@ -12,7 +12,6 @@ class App
 	{
 		$URL = $_GET['url'] ?? 'home';
 		$URL = explode("/", trim($URL,"/"));
-		var_dump($URL);
 		return $URL;	
 	}
 
@@ -39,10 +38,8 @@ class App
 
 	public function loadController($URL,$req_method)
 	{
-		dump($URL);
 		if (isset($this->routes[$req_method][$URL]) ) {
             $action = $this->routes[$req_method][$URL];
-			dump($action);
 			$controller_name = $action[0];
 			if(isset($action[1])){
 				#Handling the method to call
