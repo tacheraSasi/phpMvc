@@ -12,7 +12,7 @@ defined('ROOTPATH') OR exit('Access Denied!');
 class Request
 {
 	
-	/** check which post method was used **/
+	/** checks which post method was used **/
 	public static function method():string
 	{
 		return $_SERVER['REQUEST_METHOD'];
@@ -23,7 +23,7 @@ class Request
 		#return trim(parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH),'/');
 	}
 
-	/** check if something was posted **/
+	/** checks if something was posted **/
 	public function posted():bool
 	{
 		if($_SERVER['REQUEST_METHOD'] == "POST" && count($_POST) > 0)
