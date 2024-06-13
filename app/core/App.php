@@ -41,17 +41,27 @@ class App
 	public function loadController($URL,$req_method)
 	{
 		dump($URL);
-		if (isset($this->routes[$req_method][$URL])) {
+		if (isset($this->routes[$req_method][$URL]) ) {
             $action = $this->routes[$req_method][$URL];
-
 			dump($action);
+			$controller_name = $action[0];
+			$this->require_controller($controller_name);
+			
+        }elseif($URL === 'home'){
+			$this->require_controller('home');
+		} else {
+			$this->require_controller('_404');
+        }
+		
 
-			$filename = "../app/controllers/".ucfirst($action[0]).".php";
+	}	
+	public function require_controller($controller_name){
+		$filename = "../app/controllers/".$controller_name.".php";
 			if(file_exists($filename))
 			{
 				require $filename;
-				$this->controller = ucfirst($action[0]);
-				unset($action[0]);
+				$this->controller = ucfirst($controller_name);
+				unset($controller_name);
 			}else{
 
 				$filename = "../app/controllers/_404.php";
@@ -71,13 +81,7 @@ class App
 			}
 
 			call_user_func_array([$controller,$this->method], []);
-            
-        } else {
-            echo "404 Not Found";
-        }
-		
-
-	}	
+	}
 
 	public function run(){
 		$req = new \Core\Request;
