@@ -22,4 +22,9 @@ Trait MainController
 			require $filename;
 		}
 	}
+	public function renderJSON($data = []){
+		$json_data = json_encode($data);
+
+		echo "<pre>$json_data</pre>";
+	}
 }
