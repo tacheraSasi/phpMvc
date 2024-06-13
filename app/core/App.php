@@ -16,7 +16,6 @@ class App
 		return $URL;	
 	}
 
-
     public function get($uri, $action)
     {
         $this->addRoute('GET', $uri, $action);
@@ -45,7 +44,11 @@ class App
             $action = $this->routes[$req_method][$URL];
 			dump($action);
 			$controller_name = $action[0];
-			$this->require_controller($controller_name);
+			if(isset($action[1])){
+				#Handling the method to call
+				$this->method = $action[1];
+			}
+			$this->require_controller($controller_name,$this->method);
 			
         }elseif($URL === 'home'){
 			$this->require_controller('home');
@@ -55,7 +58,7 @@ class App
 		
 
 	}	
-	public function require_controller($controller_name){
+	public function require_controller($controller_name, $method_name='index'){
 		$filename = "../app/controllers/".$controller_name.".php";
 			if(file_exists($filename))
 			{
