@@ -11,8 +11,13 @@ class Home
 
 	public function index()
 	{
-
-		$this->view('home');
+		$context = [
+			"users"=>[
+				"Tach","Sasi"
+			],
+			"value"=>2000
+		];
+		$this->view('home',$context);
 	}
 	public function new(){
 		$data = [

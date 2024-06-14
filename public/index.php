@@ -11,7 +11,7 @@ $app = new App;
 $app->get('route/one',[Home::class,'index']);
 $app->get('login',[Login::class,'index']);
 $app->post('login',[Login::class,'index']);
-$app->get('home/new',[Home::class,'index']);
+$app->get('new',[Home::class,'new']);
 
 $app->run();
 
