@@ -8,8 +8,26 @@ body{
     justify-content: center;
     align-items: center;
 }
-.container{
+.main-container{
     width: 400px;
     height: 400px;
-    box-shadow: 2px black;
+    margin-top: 4rem;
+    background-color: rgb(234, 244, 252);
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.144);
+}
+.add{
+    text-decoration: none;
+    width: 100%;
+    padding:1rem;
+    background-color:rgb(67, 165, 165);
+    color:black;
+    border-radius:2rem;
+    margin:1rem auto;
+    border:none;
+    outline:none;
+    font-size: larger;
+    cursor:pointer;
+    
 }
