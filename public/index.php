@@ -14,6 +14,8 @@ $app->post('login',[Login::class,'index']);
 $app->get('new',[Home::class,'new']);
 #Test todo app with the framework
 $app->get('todo',[TodoApp::class]);
+$app->get('todo/new',[TodoApp::class, 'new']);
+$app->post('todo/new',[TodoApp::class, 'add']);
 
 $app->run();
 
