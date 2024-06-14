@@ -11,7 +11,8 @@ if((empty($_SERVER['SERVER_NAME']) && php_sapi_name() == 'cli') || (!empty($_SER
 	define('DBPASS', '');
 	define('DBDRIVER', '');
 	
-	define('ROOT', 'http://localhost/mvc/public');
+	define('ROOT', 'http://localhost/mvc/public/');
+	define('STATIC_FILES',ROOT.'static/');
 
 }else
 {
