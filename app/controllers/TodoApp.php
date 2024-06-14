@@ -11,10 +11,23 @@ class TodoApp
 {
 	use MainController;
 
-	public function index()
-	{
+	public function index(){
+		$todos = [
+			'Build ekiliSense',
+			'Test mvc framework',
+			'Learn Django',
+			'mernStack'
+		];
+		$context = ["todos"=>$todos];
+		$this->view('todoapp',$context);
 
-		$this->view('todoapp');
+		return $this->todos;
+	}
+	public function new(){
+		$this->view('new-todo');
+	}
+	public function add(){
+		redirect_to('../todo');
 	}
 
 }
