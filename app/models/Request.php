@@ -24,7 +24,7 @@ class Request
 	}
 
 	/** checks if something was posted **/
-	public function posted():bool
+	public function posted():bool 
 	{
 		if($_SERVER['REQUEST_METHOD'] == "POST" && count($_POST) > 0)
 		{
