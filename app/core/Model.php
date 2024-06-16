@@ -34,7 +34,7 @@ Trait Model
 		foreach ($keys as $key) {
 			$query .= $key . " = :". $key . " && ";
 		}
-
+ 
 		foreach ($keys_not as $key) {
 			$query .= $key . " != :". $key . " && ";
 		}

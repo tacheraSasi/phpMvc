@@ -1,6 +1,6 @@
 <?php
 
-namespace Thunder;
+namespace Luna;
 
 defined('CPATH') OR exit('Access Denied!');
 

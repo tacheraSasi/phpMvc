@@ -21,7 +21,6 @@ class TodoApp
 		$context = ["todos"=>$todos];
 		$this->view('todoapp',$context);
 
-		return $this->todos;
 	}
 	public function new(){
 		$this->view('new-todo');
