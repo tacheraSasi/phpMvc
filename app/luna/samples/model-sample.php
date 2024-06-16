@@ -4,11 +4,8 @@ namespace Model;
 
 defined('ROOTPATH') OR exit('Access Denied!');
 
-/**
- * {CLASSNAME} class
- */
-class {CLASSNAME}
-{
+#{CLASSNAME} class
+class {CLASSNAME}{
 	
 	use Model;
 

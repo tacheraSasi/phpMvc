@@ -1,13 +1,13 @@
 <?php
 
-namespace Thunder;
+namespace Luna;
 
 defined('CPATH') OR exit('Access Denied!');
 
 /**
- * Thunder class
+ * Luna class
  */
-class Thunder
+class Luna
 {
 
     private $version = '1.0.0';
@@ -96,7 +96,7 @@ class Thunder
                 if(file_exists($filename))
                     die("\n\rThat controller already exists\n\r");
                 
-                $sample_file = file_get_contents('app'.DS.'thunder'.DS.'samples'.DS.'controller-sample.php');
+                $sample_file = file_get_contents('app'.DS.'Luna'.DS.'samples'.DS.'controller-sample.php');
                 $sample_file = preg_replace("/\{CLASSNAME\}/", ucfirst($classname), $sample_file);
                 $sample_file = preg_replace("/\{classname\}/", strtolower($classname), $sample_file);
 
@@ -113,7 +113,7 @@ class Thunder
                 if(file_exists($filename))
                     die("\n\rThat model already exists\n\r");
 
-                $sample_file = file_get_contents('app'.DS.'thunder'.DS.'samples'.DS.'model-sample.php');
+                $sample_file = file_get_contents('app'.DS.'Luna'.DS.'samples'.DS.'model-sample.php');
                 $sample_file = preg_replace("/\{CLASSNAME\}/", ucfirst($classname), $sample_file);
                 
                 /** only add as 's' at the end of table name if it doesnt exist**/
@@ -149,7 +149,7 @@ class Thunder
     {
         echo "
 
-    Thunder v$this->version Command Line Tool
+    Luna v$this->version Command Line Tool
 
     Database
       db:create          Create a new database schema.

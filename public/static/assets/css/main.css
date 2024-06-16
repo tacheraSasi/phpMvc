@@ -23,7 +23,7 @@ body{
     text-decoration: none;
     width: 100%;
     padding:1rem;
-    background-color:rgb(67, 165, 165);
+    background-color:#43a5a5;
     color:black;
     border-radius:2rem;
     margin:1rem auto;
@@ -52,7 +52,7 @@ body{
     margin:1rem auto;
 }
 .todo .controls{
-    background-color: bisque;
+    background-color: #43a5a5;
     border-radius: 8px;
     padding:4px;
     cursor: pointer;

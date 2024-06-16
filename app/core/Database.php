@@ -4,8 +4,7 @@ namespace Model;
 
 defined('ROOTPATH') OR exit('Access Denied!');
 
-Trait Database
-{
+Trait Database{
 
 	private function connect()
 	{
