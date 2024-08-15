@@ -84,7 +84,7 @@ class App
 	}
 
 	public function run(){
-		$req = new \Core\Request;
+		$req = new \Luna\Request;
 		$this->loadController($req::get_uri(),$req::method());
 	}
 

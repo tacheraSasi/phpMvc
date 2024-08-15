@@ -26,7 +26,18 @@ class TodoApp
 		$this->view('new-todo');
 	}
 	public function add(){
-		redirect_to('../todo');
+		$db = new \Model\Database;
+		$conn = $db->connect;
+		$req = new \Luna\Request;
+		$todo = $req->post('todo');
+		$query = "insert into todos (todo)values($todo)";
+		$add = mysqli_query($conn,$query);
+		if($add->add()){
+			redirect_to('../todo');
+		}else{
+			echo "something went wrong";
+			
+		}
 	}
 
 }

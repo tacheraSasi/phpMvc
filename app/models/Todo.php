@@ -11,26 +11,11 @@ class Todo{
 
 	protected $table = 'todos';
 	protected $primaryKey = 'id';
-	protected $loginUniqueColumn = 'email';
 
 	protected $allowedColumns = [
 		
 	];
 
-	/*****************************
-	 * 	rules include:
-		required
-		alpha
-		email
-		numeric
-		unique
-		symbol
-		longer_than_8_chars
-		alpha_numeric_symbol
-		alpha_numeric
-		alpha_symbol
-	 * 
-	 ****************************/
 	protected $validationRules = [
 
 		'email' => [
@@ -47,5 +32,19 @@ class Todo{
 			'required',
 		],
 	];
+
+	public function add(){
+		$req = new \Core\Request;
+		$todo = $req->post('todo');
+		if($this->insert(['todo'=>$todo])){
+			return True;
+		}else{
+			return False;
+		}
+	}
+	
+	public function getAllTodos(){
+		return $this->getAll();
+	}
 
 }

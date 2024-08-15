@@ -16,14 +16,16 @@ $app->get('luna/render',[Luna::class,'render']);
 $app->get('login',[Login::class,'index']);
 $app->post('login',[Login::class,'index']);
 $app->get('new',[Home::class,'new']);
-#Test todo app with the framework
 $app->get('todo',[TodoApp::class]);
 $app->get('todo/new',[TodoApp::class, 'new']);
 $app->post('todo/new',[TodoApp::class, 'add']);
 
+#lunaPHP will run 
+#Through the run method
 $app->run();
 
 
 /*
 TODO:fix the last slash issues home/
+database and model
 */

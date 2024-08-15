@@ -24,6 +24,12 @@ Trait Model
 
 		return $this->query($query);
 	}
+	public function getAll()
+	{
+	 
+		$query = "select * from $this->table";
+		return $this->query($query);
+	}
 
 	public function where($data, $data_not = [])
 	{
@@ -71,7 +77,7 @@ Trait Model
 			return $result[0];
 
 		return false;
-	}
+	} 
 
 	public function insert($data)
 	{
