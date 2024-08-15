@@ -5,7 +5,7 @@
  * Save or read data to the current session
  */
 
-namespace Core;
+namespace Luna;
 
 defined('ROOTPATH') OR exit('Access Denied!');
 

@@ -4,7 +4,7 @@
  * pagination class for pagination
  */
 
-namespace Core;
+namespace Luna;
 
 defined('ROOTPATH') OR exit('Access Denied!');
 

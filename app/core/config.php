@@ -24,6 +24,7 @@ if((empty($_SERVER['SERVER_NAME']) && php_sapi_name() == 'cli') || (!empty($_SER
 	define('DBDRIVER', '');
 
 	define('ROOT', 'https://www.yourwebsite.com');
+	define('STATIC_FILES',ROOT.'static/');
 
 }
 

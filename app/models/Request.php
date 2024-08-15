@@ -5,7 +5,7 @@
  * Gets and sets data in the POST and GET global variables
  */
 
-namespace Core;
+namespace Luna;
 
 defined('ROOTPATH') OR exit('Access Denied!');
 
