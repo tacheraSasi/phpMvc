@@ -1,2 +1,1 @@
-# phpMvc
-# phpMvc
+# phpMvc a simple php mvc framework
