@@ -165,7 +165,378 @@ class Luna
       make:model         Generates a new model file.
       make:migration     Generates a new migration file.
       make:seeder        Generates a new seeder file.
+
+    Viper Framework (Enhanced)
+      make:controller    Generates an enhanced controller in src/
+      make:service       Generates a service class in src/
+      make:module        Generates a module with controller and service
             
         ";
+    }
+
+    /**
+     * Generate enhanced controller in src/ directory
+     */
+    public function makeViperController($argv)
+    {
+        $classname = $argv[2] ?? null;
+        
+        if(empty($classname)) {
+            die("\n\rPlease provide a controller name\n\r");
+        }
+        
+        $classname = preg_replace("/[^a-zA-Z0-9_]+/", "", $classname);
+        
+        if(preg_match("/^[^a-zA-Z_]+/", $classname)) {
+            die("\n\rClass names cant start with a number\n\r");
+        }
+        
+        if(!file_exists('src')) {
+            mkdir('src', 0755, true);
+        }
+        
+        if(!file_exists('src/Controllers')) {
+            mkdir('src/Controllers', 0755, true);
+        }
+        
+        $filename = 'src/Controllers/' . ucfirst($classname) . ".php";
+        
+        if(file_exists($filename)) {
+            die("\n\rThat controller already exists\n\r");
+        }
+        
+        $template = $this->getViperControllerTemplate();
+        $template = str_replace('{CLASSNAME}', ucfirst($classname), $template);
+        $template = str_replace('{classname}', strtolower($classname), $template);
+        
+        if(file_put_contents($filename, $template)) {
+            echo "\n\rViper Controller created successfully: $filename\n\r";
+        } else {
+            die("\n\rFailed to create Controller due to an error\n\r");
+        }
+    }
+
+    /**
+     * Generate service in src/ directory
+     */
+    public function makeViperService($argv)
+    {
+        $classname = $argv[2] ?? null;
+        
+        if(empty($classname)) {
+            die("\n\rPlease provide a service name\n\r");
+        }
+        
+        $classname = preg_replace("/[^a-zA-Z0-9_]+/", "", $classname);
+        
+        if(preg_match("/^[^a-zA-Z_]+/", $classname)) {
+            die("\n\rClass names cant start with a number\n\r");
+        }
+        
+        if(!file_exists('src')) {
+            mkdir('src', 0755, true);
+        }
+        
+        if(!file_exists('src/Services')) {
+            mkdir('src/Services', 0755, true);
+        }
+        
+        $filename = 'src/Services/' . ucfirst($classname) . ".php";
+        
+        if(file_exists($filename)) {
+            die("\n\rThat service already exists\n\r");
+        }
+        
+        $template = $this->getViperServiceTemplate();
+        $template = str_replace('{CLASSNAME}', ucfirst($classname), $template);
+        
+        if(file_put_contents($filename, $template)) {
+            echo "\n\rViper Service created successfully: $filename\n\r";
+        } else {
+            die("\n\rFailed to create Service due to an error\n\r");
+        }
+    }
+
+    /**
+     * Generate module in src/ directory
+     */
+    public function makeViperModule($argv)
+    {
+        $modulename = $argv[2] ?? null;
+        
+        if(empty($modulename)) {
+            die("\n\rPlease provide a module name\n\r");
+        }
+        
+        $modulename = preg_replace("/[^a-zA-Z0-9_]+/", "", $modulename);
+        
+        if(preg_match("/^[^a-zA-Z_]+/", $modulename)) {
+            die("\n\rModule names cant start with a number\n\r");
+        }
+        
+        if(!file_exists('src')) {
+            mkdir('src', 0755, true);
+        }
+        
+        if(!file_exists('src/Modules')) {
+            mkdir('src/Modules', 0755, true);
+        }
+        
+        $moduleDir = 'src/Modules/' . ucfirst($modulename);
+        
+        if(file_exists($moduleDir)) {
+            die("\n\rThat module already exists\n\r");
+        }
+        
+        // Create module directory structure
+        mkdir($moduleDir, 0755, true);
+        mkdir($moduleDir . '/Controllers', 0755, true);
+        mkdir($moduleDir . '/Services', 0755, true);
+        
+        // Create controller
+        $controllerTemplate = $this->getViperControllerTemplate();
+        $controllerTemplate = str_replace('{CLASSNAME}', ucfirst($modulename) . 'Controller', $controllerTemplate);
+        $controllerTemplate = str_replace('{classname}', strtolower($modulename), $controllerTemplate);
+        file_put_contents($moduleDir . '/Controllers/' . ucfirst($modulename) . 'Controller.php', $controllerTemplate);
+        
+        // Create service
+        $serviceTemplate = $this->getViperServiceTemplate();
+        $serviceTemplate = str_replace('{CLASSNAME}', ucfirst($modulename) . 'Service', $serviceTemplate);
+        file_put_contents($moduleDir . '/Services/' . ucfirst($modulename) . 'Service.php', $serviceTemplate);
+        
+        // Create module file
+        $moduleTemplate = $this->getViperModuleTemplate();
+        $moduleTemplate = str_replace('{CLASSNAME}', ucfirst($modulename) . 'Module', $moduleTemplate);
+        $moduleTemplate = str_replace('{MODULE}', ucfirst($modulename), $moduleTemplate);
+        file_put_contents($moduleDir . '/' . ucfirst($modulename) . 'Module.php', $moduleTemplate);
+        
+        echo "\n\rViper Module created successfully: $moduleDir\n\r";
+        echo "  - Controller: {$moduleDir}/Controllers/" . ucfirst($modulename) . "Controller.php\n\r";
+        echo "  - Service: {$moduleDir}/Services/" . ucfirst($modulename) . "Service.php\n\r";
+        echo "  - Module: {$moduleDir}/" . ucfirst($modulename) . "Module.php\n\r";
+    }
+
+    /**
+     * Get Viper controller template
+     */
+    protected function getViperControllerTemplate(): string
+    {
+        return '<?php
+
+namespace App\Controllers;
+
+use Viper\Http\Request;
+use Viper\Http\Response;
+
+/**
+ * {CLASSNAME} Controller
+ */
+class {CLASSNAME}
+{
+    /**
+     * Display a listing of the resource
+     */
+    public function index(Request $request, Response $response): Response
+    {
+        return $response->json([
+            \'message\' => \'Hello from {CLASSNAME}!\',
+            \'data\' => []
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource
+     */
+    public function create(Request $request, Response $response): Response
+    {
+        return $response->json([\'message\' => \'Create form for {classname}\']);
+    }
+
+    /**
+     * Store a newly created resource
+     */
+    public function store(Request $request, Response $response): Response
+    {
+        $data = $request->all();
+        
+        // TODO: Implement validation and storage logic
+        
+        return $response->json([
+            \'message\' => \'{CLASSNAME} created successfully\',
+            \'data\' => $data
+        ], 201);
+    }
+
+    /**
+     * Display the specified resource
+     */
+    public function show(Request $request, Response $response): Response
+    {
+        $id = $request->query(\'id\');
+        
+        return $response->json([
+            \'message\' => \'Showing {classname} with ID: \' . $id,
+            \'data\' => [\'id\' => $id]
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource
+     */
+    public function edit(Request $request, Response $response): Response
+    {
+        $id = $request->query(\'id\');
+        
+        return $response->json([\'message\' => \'Edit form for {classname} ID: \' . $id]);
+    }
+
+    /**
+     * Update the specified resource
+     */
+    public function update(Request $request, Response $response): Response
+    {
+        $id = $request->query(\'id\');
+        $data = $request->all();
+        
+        // TODO: Implement validation and update logic
+        
+        return $response->json([
+            \'message\' => \'{CLASSNAME} updated successfully\',
+            \'data\' => array_merge([\'id\' => $id], $data)
+        ]);
+    }
+
+    /**
+     * Remove the specified resource
+     */
+    public function destroy(Request $request, Response $response): Response
+    {
+        $id = $request->query(\'id\');
+        
+        // TODO: Implement deletion logic
+        
+        return $response->json([
+            \'message\' => \'{CLASSNAME} deleted successfully\',
+            \'data\' => [\'id\' => $id]
+        ]);
+    }
+}
+';
+    }
+
+    /**
+     * Get Viper service template
+     */
+    protected function getViperServiceTemplate(): string
+    {
+        return '<?php
+
+namespace App\Services;
+
+use Viper\Services\BaseService;
+
+/**
+ * {CLASSNAME} Service
+ */
+class {CLASSNAME} extends BaseService
+{
+    /**
+     * Get all items
+     */
+    public function getAll(): array
+    {
+        // TODO: Implement business logic
+        return [];
+    }
+
+    /**
+     * Get item by ID
+     */
+    public function getById(int $id): ?array
+    {
+        // TODO: Implement business logic
+        return null;
+    }
+
+    /**
+     * Create new item
+     */
+    public function create(array $data): array
+    {
+        // TODO: Implement creation logic
+        return $data;
+    }
+
+    /**
+     * Update existing item
+     */
+    public function update(int $id, array $data): array
+    {
+        // TODO: Implement update logic
+        return array_merge([\'id\' => $id], $data);
+    }
+
+    /**
+     * Delete item
+     */
+    public function delete(int $id): bool
+    {
+        // TODO: Implement deletion logic
+        return true;
+    }
+}
+';
+    }
+
+    /**
+     * Get Viper module template
+     */
+    protected function getViperModuleTemplate(): string
+    {
+        return '<?php
+
+namespace App\Modules\{MODULE};
+
+use Viper\Core\Router;
+use Viper\Core\Container;
+use App\Modules\{MODULE}\Controllers\{MODULE}Controller;
+use App\Modules\{MODULE}\Services\{MODULE}Service;
+
+/**
+ * {CLASSNAME} Module
+ */
+class {CLASSNAME}
+{
+    /**
+     * Register module routes
+     */
+    public function registerRoutes(Router $router): void
+    {
+        $router->get(\'/{classname}\', [{MODULE}Controller::class, \'index\']);
+        $router->post(\'/{classname}\', [{MODULE}Controller::class, \'store\']);
+        $router->get(\'/{classname}/create\', [{MODULE}Controller::class, \'create\']);
+        $router->get(\'/{classname}/{{id}}\', [{MODULE}Controller::class, \'show\']);
+        $router->get(\'/{classname}/{{id}}/edit\', [{MODULE}Controller::class, \'edit\']);
+        $router->put(\'/{classname}/{{id}}\', [{MODULE}Controller::class, \'update\']);
+        $router->delete(\'/{classname}/{{id}}\', [{MODULE}Controller::class, \'destroy\']);
+    }
+
+    /**
+     * Register module services
+     */
+    public function registerServices(Container $container): void
+    {
+        $container->bind({MODULE}Service::class);
+    }
+
+    /**
+     * Boot module
+     */
+    public function boot(): void
+    {
+        // Module initialization logic
+    }
+}
+';
     }
 }
