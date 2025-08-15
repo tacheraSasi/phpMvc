@@ -1,0 +1,16 @@
+[2025-08-15 16:31:50] INFO: Request started | Context: {"method":"GET","uri":"home","ip":"::1"}
+[2025-08-15 16:31:50] ERROR: preg_match(): Unknown modifier ']' | Context: {"exception":"ErrorException: preg_match(): Unknown modifier ']'","file":"\/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Route.php","line":"52","trace":"#0 [internal function]: Viper\\Core\\ErrorHandler->handleError()\n#1 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Route.php(52): preg_match()\n#2 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Router.php(139): Viper\\Core\\Route->matches()\n#3 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Router.php(110): Viper\\Core\\Router->findRoute()\n#4 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Application.php(170): Viper\\Core\\Router->dispatch()\n#5 \/home\/runner\/work\/phpMvc\/phpMvc\/public\/enhanced.php(88): Viper\\Core\\Application->run()\n#6 {main}"}
+[2025-08-15 16:32:20] INFO: Request started | Context: {"method":"GET","uri":"home","ip":"::1"}
+[2025-08-15 16:32:20] ERROR: preg_match(): Unknown modifier ']' | Context: {"exception":"ErrorException: preg_match(): Unknown modifier ']'","file":"\/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Route.php","line":"52","trace":"#0 [internal function]: Viper\\Core\\ErrorHandler->handleError()\n#1 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Route.php(52): preg_match()\n#2 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Router.php(139): Viper\\Core\\Route->matches()\n#3 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Router.php(110): Viper\\Core\\Router->findRoute()\n#4 \/home\/runner\/work\/phpMvc\/phpMvc\/src\/Core\/Application.php(170): Viper\\Core\\Router->dispatch()\n#5 \/home\/runner\/work\/phpMvc\/phpMvc\/public\/enhanced.php(88): Viper\\Core\\Application->run()\n#6 {main}"}
+[2025-08-15 16:32:43] INFO: Request started | Context: {"method":"GET","uri":"home","ip":"::1"}
+[2025-08-15 16:32:43] INFO: Request completed | Context: {"status":"200","execution_time_ms":"0.45"}
+[2025-08-15 16:32:53] INFO: Request started | Context: {"method":"GET","uri":"health","ip":"::1"}
+[2025-08-15 16:32:53] INFO: Request completed | Context: {"status":"200","execution_time_ms":"0.3"}
+[2025-08-15 16:33:01] INFO: Request started | Context: {"method":"POST","uri":"api\/validate","ip":"::1"}
+[2025-08-15 16:33:01] INFO: Request completed | Context: {"status":"404","execution_time_ms":"0.13"}
+[2025-08-15 16:33:23] INFO: Request started | Context: {"method":"POST","uri":"api\/validate","ip":"::1"}
+[2025-08-15 16:33:23] INFO: Request completed | Context: {"status":"422","execution_time_ms":"1.27"}
+[2025-08-15 16:33:45] INFO: Request started | Context: {"method":"POST","uri":"api\/validate","ip":"::1"}
+[2025-08-15 16:33:45] INFO: Request completed | Context: {"status":"200","execution_time_ms":"0.83"}
+[2025-08-15 16:33:55] INFO: Request started | Context: {"method":"POST","uri":"api\/validate","ip":"::1"}
+[2025-08-15 16:33:55] INFO: Request completed | Context: {"status":"422","execution_time_ms":"0.36"}
