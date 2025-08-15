@@ -26,7 +26,7 @@ class Home
 			"third"=>"Sasi W",
 			"last"=>"Sky W"
 		];
-		$this->renderJSON($data);
+		$this->sendSuccess($data, 'Data retrieved successfully');
 	}
 
 }
