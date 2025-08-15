@@ -14,3 +14,7 @@
 [2025-08-15 16:33:45] INFO: Request completed | Context: {"status":"200","execution_time_ms":"0.83"}
 [2025-08-15 16:33:55] INFO: Request started | Context: {"method":"POST","uri":"api\/validate","ip":"::1"}
 [2025-08-15 16:33:55] INFO: Request completed | Context: {"status":"422","execution_time_ms":"0.36"}
+[2025-08-15 16:36:37] INFO: Request started | Context: {"method":"GET","uri":"home","ip":"::1"}
+[2025-08-15 16:36:37] INFO: Request completed | Context: {"status":"200","execution_time_ms":"1.27"}
+[2025-08-15 16:36:55] INFO: Request started | Context: {"method":"GET","uri":"health","ip":"::1"}
+[2025-08-15 16:36:55] INFO: Request completed | Context: {"status":"200","execution_time_ms":"0.36"}

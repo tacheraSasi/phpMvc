@@ -1,0 +1,31 @@
+# Logs
+storage/logs/*.log
+!storage/logs/.gitkeep
+
+# Environment file
+.env
+
+# Temporary files
+/tmp/*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Composer
+vendor/
+composer.lock
+
+# Node modules (if using any frontend tools)
+node_modules/
+npm-debug.log
+
+# Build artifacts
+dist/
+build/
