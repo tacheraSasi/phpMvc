@@ -1,5 +1,14 @@
 <?php 
 
+use Controller\Api;
+use Controller\AuthApi;
+use Controller\Home;
+use Controller\Login;
+use Controller\Luna;
+use Controller\ProtectedApi;
+use Controller\TodoApp;
+use Controller\UserApi;
+
 session_start();
 
 define('ROOTPATH', __DIR__ . DIRECTORY_SEPARATOR);
