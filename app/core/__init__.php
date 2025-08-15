@@ -3,11 +3,24 @@
 defined('ROOTPATH') OR exit('Access Denied!');
 
 spl_autoload_register(function($classname){
-
 	$classname = explode("\\", $classname);
 	$classname = end($classname);
-	require $filename = "../app/models/".ucfirst($classname).".php";
+	
+	// Try models directory first
+	$modelFile = "../app/models/".ucfirst($classname).".php";
+	if(file_exists($modelFile)) {
+		require $modelFile;
+		return;
+	}
+	
+	// Try core directory
+	$coreFile = "../app/core/".ucfirst($classname).".php";
+	if(file_exists($coreFile)) {
+		require $coreFile;
+		return;
+	}
 });
+
 /**  Valid PHP Version? **/
 $minPHPVersion = '8.0';
 if (phpversion() < $minPHPVersion)
@@ -20,4 +33,12 @@ require 'functions.php';
 require 'Database.php';
 require 'Model.php';
 require 'Controller.php';
+require 'Router.php';
+require 'ErrorHandler.php';
+require 'Container.php';
+require 'Config.php';
+require 'Validator.php';
 require 'App.php';
+
+// Register error handler for better API error responses
+ErrorHandler::register();
