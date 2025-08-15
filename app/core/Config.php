@@ -5,6 +5,7 @@ defined('ROOTPATH') OR exit('Access Denied!');
 /**
  * Configuration manager with environment support
  */
+if (!class_exists('Config')) {
 class Config
 {
     protected static $config = [];
@@ -107,4 +108,5 @@ class Config
         self::load();
         return self::$config;
     }
+}
 }
