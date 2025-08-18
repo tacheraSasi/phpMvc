@@ -28,9 +28,34 @@ require_once "../app/core/middleware/AuthMiddleware.php";
 
 /* ---------------------------------------------------------------- */
 
-$app = new App;
 
-// Web routes
+// Register routes using static methods
+App::get('static-home',[Home::class]);
+App::get('static-luna',[Luna::class]);
+App::get('static-luna/render',[Luna::class,'render']);
+App::get('static-login',[Login::class,'index']);
+App::post('static-login',[Login::class,'index']);
+App::get('static-new',[Home::class,'new']);
+App::get('static-todo',[TodoApp::class]);
+App::get('static-todo/new',[TodoApp::class, 'new']);
+App::post('static-todo/new',[TodoApp::class, 'add']);
+App::get('static-api',[Api::class]);
+App::post('static-api/auth/login',[AuthApi::class, 'login']);
+App::post('static-api/auth/register',[AuthApi::class, 'register']);
+App::get('static-api/auth/me',[AuthApi::class, 'me']);
+App::post('static-api/auth/refresh',[AuthApi::class, 'refresh']);
+App::get('static-api/profile',[ProtectedApi::class, 'profile']);
+App::get('static-api/dashboard',[ProtectedApi::class, 'dashboard']);
+App::resource('static-api/users', UserApi::class);
+App::get('static-api/users',[UserApi::class, 'index']);
+App::post('static-api/users',[UserApi::class, 'store']);
+App::get('static-api/users/{id}',[UserApi::class, 'show']);
+App::put('static-api/users/{id}',[UserApi::class, 'update']);
+App::delete('static-api/users/{id}',[UserApi::class, 'destroy']);
+App::get('static-api/{any}',[Api::class, 'notFound']);
+
+// Register routes using instance methods
+$app = new App;
 $app->get('home',[Home::class]);
 $app->get('luna',[Luna::class]);
 $app->get('luna/render',[Luna::class,'render']);
@@ -40,35 +65,21 @@ $app->get('new',[Home::class,'new']);
 $app->get('todo',[TodoApp::class]);
 $app->get('todo/new',[TodoApp::class, 'new']);
 $app->post('todo/new',[TodoApp::class, 'add']);
-
-// API routes
 $app->get('api',[Api::class]);
-
-// Authentication routes
 $app->post('api/auth/login',[AuthApi::class, 'login']);
 $app->post('api/auth/register',[AuthApi::class, 'register']);
 $app->get('api/auth/me',[AuthApi::class, 'me']);
 $app->post('api/auth/refresh',[AuthApi::class, 'refresh']);
-
-// Protected endpoints (require authentication)
 $app->get('api/profile',[ProtectedApi::class, 'profile']);
 $app->get('api/dashboard',[ProtectedApi::class, 'dashboard']);
-
-// User management API
 $app->resource('api/users', UserApi::class);
-
-// Alternative explicit API routes for demonstration
 $app->get('api/users',[UserApi::class, 'index']);
 $app->post('api/users',[UserApi::class, 'store']);
 $app->get('api/users/{id}',[UserApi::class, 'show']);
 $app->put('api/users/{id}',[UserApi::class, 'update']);
 $app->delete('api/users/{id}',[UserApi::class, 'destroy']);
-
-// Fallback for undefined API routes
 $app->get('api/{any}',[Api::class, 'notFound']);
 
-#lunaPHP will run 
-#Through the run method
 $app->run();
 
 
