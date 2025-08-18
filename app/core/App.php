@@ -7,6 +7,7 @@ class App
 	private $controller = 'Home';
 	private $method 	= 'index';
 	protected static $routes = [];
+	protected $instanceRoutes = [];
 
 	private function splitURL()
 	{
@@ -15,6 +16,7 @@ class App
 		return $URL;	
 	}
 
+	// Static route registration
 	public static function get($uri, $action)
 	{
 		self::addRoute('GET', $uri, $action);
@@ -61,13 +63,61 @@ class App
 		return new static;
 	}
 
+	// Instance route registration
+	public function iget($uri, $action)
+	{
+		$this->addInstanceRoute('GET', $uri, $action);
+		return $this;
+	}
+	public function ipost($uri, $action)
+	{
+		$this->addInstanceRoute('POST', $uri, $action);
+		return $this;
+	}
+	public function iput($uri, $action)
+	{
+		$this->addInstanceRoute('PUT', $uri, $action);
+		return $this;
+	}
+	public function idelete($uri, $action)
+	{
+		$this->addInstanceRoute('DELETE', $uri, $action);
+		return $this;
+	}
+	public function ipatch($uri, $action)
+	{
+		$this->addInstanceRoute('PATCH', $uri, $action);
+		return $this;
+	}
+	public function ioptions($uri, $action)
+	{
+		$this->addInstanceRoute('OPTIONS', $uri, $action);
+		return $this;
+	}
+	public function iresource($uri, $controller)
+	{
+		$this->iget($uri, [$controller, 'index']);
+		$this->ipost($uri, [$controller, 'store']);
+		$this->iget($uri . '/{id}', [$controller, 'show']);
+		$this->iput($uri . '/{id}', [$controller, 'update']);
+		$this->idelete($uri . '/{id}', [$controller, 'destroy']);
+		return $this;
+	}
+
 	protected static function addRoute($method, $uri, $action)
 	{
 		self::$routes[$method][$uri] = $action;
 	}
+	protected function addInstanceRoute($method, $uri, $action)
+	{
+		$this->instanceRoutes[$method][$uri] = $action;
+	}
 	public function showRoutes(){
 		echo "<pre>";
+		echo "Static routes:\n";
 		var_dump(self::$routes);
+		echo "Instance routes:\n";
+		var_dump($this->instanceRoutes);
 		echo "</pre>";
 	}
 
@@ -79,11 +129,22 @@ class App
 			return;
 		}
 
+		// Check instance routes first
+		if (isset($this->instanceRoutes[$req_method][$URL])) {
+			$action = $this->instanceRoutes[$req_method][$URL];
+			$controller_name = $action[0];
+			if(isset($action[1])){
+				$this->method = $action[1];
+			}
+			$this->require_controller($controller_name,$this->method);
+			return;
+		}
+
+		// Then check static routes
 		if (isset(self::$routes[$req_method][$URL]) ) {
 			$action = self::$routes[$req_method][$URL];
 			$controller_name = $action[0];
 			if(isset($action[1])){
-				#Handling the method to call
 				$this->method = $action[1];
 			}
 			$this->require_controller($controller_name,$this->method);
@@ -91,7 +152,8 @@ class App
 		// Try pattern matching for parameterized routes
 		} else {
 			$matched = false;
-			foreach (self::$routes[$req_method] ?? [] as $pattern => $action) {
+			// Check instance pattern routes
+			foreach ($this->instanceRoutes[$req_method] ?? [] as $pattern => $action) {
 				$params = $this->matchRoute($pattern, $URL);
 				if ($params !== false) {
 					$controller_name = $action[0];
@@ -103,7 +165,21 @@ class App
 					break;
 				}
 			}
-            
+			// Check static pattern routes
+			if (!$matched) {
+				foreach (self::$routes[$req_method] ?? [] as $pattern => $action) {
+					$params = $this->matchRoute($pattern, $URL);
+					if ($params !== false) {
+						$controller_name = $action[0];
+						if(isset($action[1])){
+							$this->method = $action[1];
+						}
+						$this->require_controller($controller_name, $this->method, $params);
+						$matched = true;
+						break;
+					}
+				}
+			}
 			if (!$matched) {
 				if($URL === 'home'){
 					$this->require_controller('home');
