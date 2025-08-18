@@ -6,7 +6,7 @@ class App
 {
 	private $controller = 'Home';
 	private $method 	= 'index';
-	protected $routes = [];
+	protected static $routes = [];
 
 	private function splitURL()
 	{
@@ -15,60 +15,59 @@ class App
 		return $URL;	
 	}
 
-    public function get($uri, $action)
-    {
-        $this->addRoute('GET', $uri, $action);
-        return $this;
-    }
+	public static function get($uri, $action)
+	{
+		self::addRoute('GET', $uri, $action);
+		return new static;
+	}
 
-    public function post($uri, $action)
-    {
-        $this->addRoute('POST', $uri, $action);
-        return $this;
-    }
+	public static function post($uri, $action)
+	{
+		self::addRoute('POST', $uri, $action);
+		return new static;
+	}
 
-    public function put($uri, $action)
-    {
-        $this->addRoute('PUT', $uri, $action);
-        return $this;
-    }
+	public static function put($uri, $action)
+	{
+		self::addRoute('PUT', $uri, $action);
+		return new static;
+	}
 
-    public function delete($uri, $action)
-    {
-        $this->addRoute('DELETE', $uri, $action);
-        return $this;
-    }
+	public static function delete($uri, $action)
+	{
+		self::addRoute('DELETE', $uri, $action);
+		return new static;
+	}
 
-    public function patch($uri, $action)
-    {
-        $this->addRoute('PATCH', $uri, $action);
-        return $this;
-    }
+	public static function patch($uri, $action)
+	{
+		self::addRoute('PATCH', $uri, $action);
+		return new static;
+	}
 
-    public function options($uri, $action)
-    {
-        $this->addRoute('OPTIONS', $uri, $action);
-        return $this;
-    }
+	public static function options($uri, $action)
+	{
+		self::addRoute('OPTIONS', $uri, $action);
+		return new static;
+	}
 
-    public function resource($uri, $controller)
-    {
-        $this->get($uri, [$controller, 'index']);
-        $this->post($uri, [$controller, 'store']);
-        $this->get($uri . '/{id}', [$controller, 'show']);
-        $this->put($uri . '/{id}', [$controller, 'update']);
-        $this->delete($uri . '/{id}', [$controller, 'destroy']);
-        return $this;
-    }
+	public static function resource($uri, $controller)
+	{
+		self::get($uri, [$controller, 'index']);
+		self::post($uri, [$controller, 'store']);
+		self::get($uri . '/{id}', [$controller, 'show']);
+		self::put($uri . '/{id}', [$controller, 'update']);
+		self::delete($uri . '/{id}', [$controller, 'destroy']);
+		return new static;
+	}
 
-    protected function addRoute($method, $uri, $action)
-    {
-        $this->routes[$method][$uri] = $action;
-        
-    }
+	protected static function addRoute($method, $uri, $action)
+	{
+		self::$routes[$method][$uri] = $action;
+	}
 	public function showRoutes(){
 		echo "<pre>";
-		var_dump($this->routes);
+		var_dump(self::$routes);
 		echo "</pre>";
 	}
 
@@ -80,19 +79,19 @@ class App
 			return;
 		}
 
-		if (isset($this->routes[$req_method][$URL]) ) {
-            $action = $this->routes[$req_method][$URL];
+		if (isset(self::$routes[$req_method][$URL]) ) {
+			$action = self::$routes[$req_method][$URL];
 			$controller_name = $action[0];
 			if(isset($action[1])){
 				#Handling the method to call
 				$this->method = $action[1];
 			}
 			$this->require_controller($controller_name,$this->method);
-			
+            
 		// Try pattern matching for parameterized routes
 		} else {
 			$matched = false;
-			foreach ($this->routes[$req_method] ?? [] as $pattern => $action) {
+			foreach (self::$routes[$req_method] ?? [] as $pattern => $action) {
 				$params = $this->matchRoute($pattern, $URL);
 				if ($params !== false) {
 					$controller_name = $action[0];
@@ -104,7 +103,7 @@ class App
 					break;
 				}
 			}
-			
+            
 			if (!$matched) {
 				if($URL === 'home'){
 					$this->require_controller('home');
@@ -140,29 +139,35 @@ class App
 	}
 	public function require_controller($controller_name, $method_name='index', $params = []){
 		$filename = "../app/controllers/".$controller_name.".php";
-			if(file_exists($filename))
+		if(file_exists($filename))
+		{
+			require_once $filename;
+			$this->controller = ucfirst($controller_name);
+		}else{
+			$filename = "../app/controllers/_404.php";
+			require_once $filename;
+			$this->controller = "_404";
+		}
+
+		$controller_class = '\\Controller\\' . $this->controller;
+		if(class_exists($controller_class)) {
+			$controller = new $controller_class();
+		} else if(class_exists($this->controller)) {
+			$controller = new $this->controller();
+		} else {
+			// fallback: try without namespace
+			$controller = new $this->controller();
+		}
+
+		if(!empty($method_name))
+		{
+			if(method_exists($controller, $method_name))
 			{
-				require $filename;
-				$this->controller = ucfirst($controller_name);
-				unset($controller_name);
-			}else{
+				$this->method = $method_name;
+			} 
+		}
 
-				$filename = "../app/controllers/_404.php";
-				require $filename;
-				$this->controller = "_404";
-			}
-
-			$controller = new ('\Controller\\'.$this->controller);
-
-			if(!empty($method_name))
-			{
-				if(method_exists($controller, $method_name))
-				{
-					$this->method = $method_name;
-				}	
-			}
-
-			call_user_func_array([$controller,$this->method], $params);
+		call_user_func_array([$controller,$this->method], $params);
 	}
 
 	public function run(){

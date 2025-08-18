@@ -27,7 +27,7 @@ class AuthApi
 			$this->sendError('Validation failed', 422, $validator->getErrors());
 		}
 		
-		// Simulate user authentication (replace with actual database lookup)
+		// This simulates user authentication (replace with actual database lookup)
 		$users = [
 			'admin@example.com' => [
 				'id' => 1,
@@ -129,10 +129,10 @@ class AuthApi
 		require_once "../app/core/middleware/AuthMiddleware.php";
 		$token = \Core\Middleware\AuthMiddleware::generateToken($user);
 		
-		$this->sendSuccess([
+		$this->sendSuccess(data: [
 			'token' => $token,
 			'token_type' => 'Bearer',
 			'expires_in' => \Config::get('security.jwt.expiry', 3600)
-		], 'Token refreshed');
+		], message: 'Token refreshed');
 	}
 }

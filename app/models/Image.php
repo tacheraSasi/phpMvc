@@ -10,7 +10,6 @@ defined('ROOTPATH') OR exit('Access Denied!');
 class Image
 {
 	
-	
 	public function resize($filename,$max_size = 700)
 	{
 	
