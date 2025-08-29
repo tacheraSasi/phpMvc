@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use DateTime;
+
 trait Helper
 {
     public function sanitizeInput($data)
@@ -23,4 +25,29 @@ trait Helper
     {
         return password_verify($password, $hash);
     }
+
+    public function formatDate($date, $format = 'Y-m-d H:i:s')
+    {
+        $dateTime = new DateTime($date);
+        return $dateTime->format($format);
+    }
+
+    public function sendError($message, $statusCode = 400, $errors = []) {
+		$response = ['error' => $message];
+		if (!empty($errors)) {
+			$response['details'] = $errors;
+		}
+		$this->renderJSON($response, $statusCode);
+	}
+	
+	public function sendSuccess($data = [], $message = null, $statusCode = 200) {
+		$response = ['success' => true];
+		if ($message) {
+			$response['message'] = $message;
+		}
+		if (!empty($data)) {
+			$response['data'] = $data;
+		}
+		$this->renderJSON($response, $statusCode);
+	}
 }
