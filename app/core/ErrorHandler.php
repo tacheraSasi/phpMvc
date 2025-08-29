@@ -1,6 +1,6 @@
 <?php
 
-defined('ROOTPATH') OR exit('Access Denied!');
+defined('ROOTPATH') or exit('Access Denied!');
 
 /**
  * Global error handler for API responses
@@ -54,7 +54,7 @@ class ErrorHandler
 
         http_response_code(500);
         header('Content-Type: application/json');
-        
+
         if (DEBUG) {
             echo json_encode($error, JSON_PRETTY_PRINT);
         } else {
