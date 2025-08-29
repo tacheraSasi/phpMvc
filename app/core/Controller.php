@@ -6,6 +6,7 @@ defined('ROOTPATH') OR exit('Access Denied!');
 
 Trait MainController
 {
+	use Helper;
 
 	public function view($name, $data = [])
 	{
