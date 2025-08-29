@@ -26,7 +26,7 @@ trait Helper
         return password_verify($password, $hash);
     }
 
-    public function formatDate($date, $format = 'Y-m-d H:i:s')
+    public function FormatDate($date, $format = 'Y-m-d H:i:s')
     {
         $dateTime = new DateTime($date);
         return $dateTime->format($format);
@@ -50,4 +50,30 @@ trait Helper
 		}
 		$this->renderJSON($response, $statusCode);
 	}
+
+    public function notFound($message = 'Not Found', $statusCode = 404) {
+		$response = ['error' => $message];
+		$this->renderJSON($response, $statusCode);
+	}
+
+    public function redirect($url, $statusCode = 302) {
+		http_response_code($statusCode);
+		header("Location: $url");
+		exit;
+	}
+
+    public function serverError($message = 'Internal Server Error', $statusCode = 500) {
+		$response = ['error' => $message];
+		$this->renderJSON($response, $statusCode);
+	}
+
+    public function setHeader($name, $value) {
+		header("$name: $value");
+	}
+
+    public function unAuthorized($message = 'Unauthorized', $statusCode = 401) {
+		$response = ['error' => $message];
+		$this->renderJSON($response, $statusCode);
+	}
+
 }
