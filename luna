@@ -1,36 +1,32 @@
 <?php
 
-if(php_sapi_name() !== 'cli')
-{
+if (php_sapi_name() !== 'cli') {
 	die("This tool is only for use in the command line");
 }
 
 define('DS', DIRECTORY_SEPARATOR);
 
-define('CPATH', __DIR__.DS);
+define('CPATH', __DIR__ . DS);
 
-define('ROOTPATH', __DIR__.DS);
+define('ROOTPATH', __DIR__ . DS);
 
 chdir(CPATH);
 
 $action = $argv[1] ?? 'help';
 
-require 'app'.DS.'luna'.DS.'init.php';
+require 'app' . DS . 'luna' . DS . 'init.php';
 
 $luna = new \Luna\Luna;
 
-if(empty($action))
-{
-	call_user_func_array([$luna,'help'], []);
-}else
-{
+if (empty($action)) {
+	call_user_func_array([$luna, 'help'], []);
+} else {
 	$parts = explode(":", $action);
 
-	if(is_callable([$luna,$parts[0]]))
-	{
-		call_user_func_array([$luna,$parts[0]], [$argv]);
-	}else{
+	if (is_callable([$luna, $parts[0]])) {
+		call_user_func_array([$luna, $parts[0]], [$argv]);
+	} else {
 		echo "\n\rThat command was not recognised. Please see below for commands";
-		call_user_func_array([$luna,'help'], []);
+		call_user_func_array([$luna, 'help'], []);
 	}
 }
