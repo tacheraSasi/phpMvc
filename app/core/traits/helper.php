@@ -294,4 +294,182 @@ trait Helper
     {
         $this->sendError($message, 403);
     }
+
+
+
+    /**
+     * Throw a 400 Bad Request error (NestJS style).
+     * @param string $message
+     * @param array $errors
+     * @return void
+     */
+    public function BadRequestException($message = 'Bad Request', $errors = [])
+    {
+        $this->sendError($message, 400, $errors);
+    }
+
+    /**
+     * Throw a 401 Unauthorized error (NestJS style).
+     * @param string $message
+     * @return void
+     */
+    public function UnauthorizedException($message = 'Unauthorized')
+    {
+        $this->sendError($message, 401);
+    }
+
+    /**
+     * Throw a 403 Forbidden error (NestJS style).
+     * @param string $message
+     * @return void
+     */
+    public function ForbiddenException($message = 'Forbidden')
+    {
+        $this->sendError($message, 403);
+    }
+
+    /**
+     * Throw a 404 Not Found error (NestJS style).
+     * @param string $message
+     * @return void
+     */
+    public function NotFoundException($message = 'Not Found')
+    {
+        $this->sendError($message, 404);
+    }
+
+    /**
+     * Throw a 409 Conflict error (NestJS style).
+     * @param string $message
+     * @return void
+     */
+    public function ConflictException($message = 'Conflict')
+    {
+        $this->sendError($message, 409);
+    }
+
+    /**
+     * Throw a 422 Unprocessable Entity error (NestJS style).
+     * @param string $message
+     * @param array $errors
+     * @return void
+     */
+    public function UnprocessableEntityException($message = 'Unprocessable Entity', $errors = [])
+    {
+        $this->sendError($message, 422, $errors);
+    }
+
+    /**
+     * Throw a 500 Internal Server Error (NestJS style).
+     * @param string $message
+     * @return void
+     */
+    public function InternalServerErrorException($message = 'Internal Server Error')
+    {
+        $this->sendError($message, 500);
+    }
+
+    /**
+     * Get the client's IP address.
+     * @return string|null
+     */
+    public function getClientIp()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+        } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+        return null;
+    }
+
+    /**
+     * Get the request method (GET, POST, etc).
+     * @return string
+     */
+    public function getRequestMethod()
+    {
+        return $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    }
+
+    /**
+     * Get the request URI.
+     * @return string
+     */
+    public function getRequestUri()
+    {
+        return $_SERVER['REQUEST_URI'] ?? '/';
+    }
+
+    /**
+     * Get all request headers as an associative array.
+     * @return array
+     */
+    public function getRequestHeaders()
+    {
+        if (function_exists('getallheaders')) {
+            return getallheaders();
+        }
+        $headers = [];
+        foreach ($_SERVER as $name => $value) {
+            if (substr($name, 0, 5) == 'HTTP_') {
+                $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                $headers[$header] = $value;
+            }
+        }
+        return $headers;
+    }
+
+    /**
+     * Get the user agent string.
+     * @return string|null
+     */
+    public function getUserAgent()
+    {
+        return $_SERVER['HTTP_USER_AGENT'] ?? null;
+    }
+
+    /**
+     * Check if the request is over HTTPS.
+     * @return bool
+     */
+    public function isSecure()
+    {
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+            return true;
+        }
+        if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get a cookie value.
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getCookie($key, $default = null)
+    {
+        return $_COOKIE[$key] ?? $default;
+    }
+
+    /**
+     * Set a cookie value.
+     * @param string $key
+     * @param string $value
+     * @param int $expire
+     * @param string $path
+     * @param string $domain
+     * @param bool $secure
+     * @param bool $httponly
+     * @return void
+     */
+    public function setCookie($key, $value, $expire = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
+    {
+        setcookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+    }
 }
