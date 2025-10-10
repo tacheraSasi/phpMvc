@@ -21,6 +21,7 @@ if (!defined('DBHOST')) define('DBHOST', 'localhost');
 if (!defined('DBNAME')) define('DBNAME', 'mvc_db');
 if (!defined('DBUSER')) define('DBUSER', 'root');
 if (!defined('DBPASS')) define('DBPASS', '');
+if (!defined('STATIC_FILES')) define('STATIC_FILES', '/static/');
 
 require "../app/core/__init__.php";
 DEBUG ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
