@@ -201,10 +201,8 @@ class App
 		} elseif (is_array($action)) {
 			// Handle controller array
 			$controller_name = $action[0];
-			if(isset($action[1])){
-				$this->method = $action[1];
-			}
-			$this->require_controller($controller_name, $this->method, $params);
+			$method_name = isset($action[1]) ? $action[1] : 'index';
+			$this->require_controller($controller_name, $method_name, $params);
 		}
 	}
 
