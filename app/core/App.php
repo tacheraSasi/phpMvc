@@ -202,6 +202,13 @@ class App
 			// Handle controller array
 			$controller_name = $action[0];
 			$method_name = isset($action[1]) ? $action[1] : 'index';
+			
+			// Extract just the class name if it includes namespace
+			if (strpos($controller_name, '\\') !== false) {
+				$parts = explode('\\', $controller_name);
+				$controller_name = end($parts);
+			}
+			
 			$this->require_controller($controller_name, $method_name, $params);
 		}
 	}
