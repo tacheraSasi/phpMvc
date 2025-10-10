@@ -132,22 +132,15 @@ class App
 		// Check instance routes first
 		if (isset($this->instanceRoutes[$req_method][$URL])) {
 			$action = $this->instanceRoutes[$req_method][$URL];
-			$controller_name = $action[0];
-			if(isset($action[1])){
-				$this->method = $action[1];
-			}
-			$this->require_controller($controller_name,$this->method);
+			$this->executeAction($action, []);
 			return;
 		}
 
 		// Then check static routes
 		if (isset(self::$routes[$req_method][$URL]) ) {
 			$action = self::$routes[$req_method][$URL];
-			$controller_name = $action[0];
-			if(isset($action[1])){
-				$this->method = $action[1];
-			}
-			$this->require_controller($controller_name,$this->method);
+			$this->executeAction($action, []);
+			return;
             
 		// Try pattern matching for parameterized routes
 		} else {
@@ -156,11 +149,7 @@ class App
 			foreach ($this->instanceRoutes[$req_method] ?? [] as $pattern => $action) {
 				$params = $this->matchRoute($pattern, $URL);
 				if ($params !== false) {
-					$controller_name = $action[0];
-					if(isset($action[1])){
-						$this->method = $action[1];
-					}
-					$this->require_controller($controller_name, $this->method, $params);
+					$this->executeAction($action, $params);
 					$matched = true;
 					break;
 				}
@@ -170,11 +159,7 @@ class App
 				foreach (self::$routes[$req_method] ?? [] as $pattern => $action) {
 					$params = $this->matchRoute($pattern, $URL);
 					if ($params !== false) {
-						$controller_name = $action[0];
-						if(isset($action[1])){
-							$this->method = $action[1];
-						}
-						$this->require_controller($controller_name, $this->method, $params);
+						$this->executeAction($action, $params);
 						$matched = true;
 						break;
 					}
@@ -202,6 +187,23 @@ class App
 		}
 
 		return false;
+	}
+
+	protected function executeAction($action, $params = [])
+	{
+		if (is_callable($action)) {
+			// Create request and response objects for callback
+			$request = new \Luna\Request();
+			$response = new \Core\Facades\Response();
+			// Pass request, response, and any route parameters
+			$callbackParams = array_merge([$request, $response], $params);
+			call_user_func_array($action, $callbackParams);
+		} elseif (is_array($action)) {
+			// Handle controller array
+			$controller_name = $action[0];
+			$method_name = isset($action[1]) ? $action[1] : 'index';
+			$this->require_controller($controller_name, $method_name, $params);
+		}
 	}
 
 	protected function handleCors()

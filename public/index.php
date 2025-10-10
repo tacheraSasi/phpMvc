@@ -12,6 +12,16 @@ use Controller\UserApi;
 session_start();
 
 define('ROOTPATH', __DIR__ . DIRECTORY_SEPARATOR);
+
+// Define required constants (set these properly for your environment)
+if (!defined('DEBUG')) define('DEBUG', true);
+if (!defined('APP_NAME')) define('APP_NAME', 'PHP MVC Framework');
+if (!defined('APP_DESC')) define('APP_DESC', 'Modern PHP MVC Framework');
+if (!defined('DBHOST')) define('DBHOST', 'localhost');
+if (!defined('DBNAME')) define('DBNAME', 'mvc_db');
+if (!defined('DBUSER')) define('DBUSER', 'root');
+if (!defined('DBPASS')) define('DBPASS', '');
+
 require "../app/core/__init__.php";
 DEBUG ? ini_set('display_errors', 1) : ini_set('display_errors', 0);
 
@@ -54,6 +64,22 @@ App::put('static-api/users/{id}',[UserApi::class, 'update']);
 App::delete('static-api/users/{id}',[UserApi::class, 'destroy']);
 App::get('static-api/{any}',[Api::class, 'notFound']);
 
+// Example callback routes (new feature!)
+App::get('callback-demo', function($req, $res) {
+	$res::json([
+		'message' => 'Hello from callback route!',
+		'method' => $req::method(),
+		'uri' => $req::get_uri()
+	]);
+});
+
+App::get('callback-demo/{id}', function($req, $res, $id) {
+	$res::json([
+		'message' => 'Callback with parameter',
+		'id' => $id
+	]);
+});
+
 // Register routes using instance methods
 $app = new App;
 $app->get('home',[Home::class]);
@@ -79,6 +105,16 @@ $app->get('api/users/{id}',[UserApi::class, 'show']);
 $app->put('api/users/{id}',[UserApi::class, 'update']);
 $app->delete('api/users/{id}',[UserApi::class, 'destroy']);
 $app->get('api/{any}',[Api::class, 'notFound']);
+
+// Example instance callback routes
+$app->post('callback-post-demo', function($req, $res) {
+	$data = $req->allInput();
+	$res::json([
+		'success' => true,
+		'message' => 'POST callback works!',
+		'received' => $data
+	]);
+});
 
 $app->run();
 
