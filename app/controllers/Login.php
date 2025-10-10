@@ -15,7 +15,7 @@ class Login
 	{
 
 		$data['user'] = new \Model\User;
-		$req = new \Core\Request;
+		$req = new \Luna\Request;
 		if($req->posted())
 		{
 			$data['user']->login($_POST);

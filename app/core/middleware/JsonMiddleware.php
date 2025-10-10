@@ -12,12 +12,13 @@ class JsonMiddleware
     public static function handle()
     {
         // Set JSON content type for API responses by default
-        if (strpos($_SERVER['REQUEST_URI'], '/api/') !== false) {
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($requestUri, '/api/') !== false || strpos($requestUri, 'url=api') !== false) {
             header('Content-Type: application/json');
         }
         
         // Validate JSON input for POST/PUT/PATCH requests
-        $method = $_SERVER['REQUEST_METHOD'];
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         if (in_array($method, ['POST', 'PUT', 'PATCH'])) {
             $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
             if (strpos($contentType, 'application/json') !== false) {
