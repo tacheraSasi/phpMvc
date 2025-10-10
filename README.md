@@ -4,7 +4,8 @@ A modern, lightweight PHP MVC framework enhanced with powerful features for buil
 
 ## Features
 
-### 🚀 **Modern API Development**
+### **Modern API Development**
+
 - RESTful routing with parameter support
 - JSON request/response handling
 - CORS support out of the box
@@ -12,12 +13,14 @@ A modern, lightweight PHP MVC framework enhanced with powerful features for buil
 - Standardized API response format
 
 ### 🔐 **Security & Authentication**  
+
 - JWT authentication middleware
 - SQL injection protection with prepared statements
 - Rate limiting middleware
 - Input validation and sanitization
 
 ### ⚡ **Developer Experience**
+
 - Dependency injection container
 - Middleware system for cross-cutting concerns
 - Global error handling with debug mode
@@ -25,6 +28,7 @@ A modern, lightweight PHP MVC framework enhanced with powerful features for buil
 - Fluent validation API
 
 ### 🛠 **Core Components**
+
 - Enhanced routing system with HTTP verb support
 - Request/Response abstraction
 - Database abstraction layer
@@ -127,7 +131,7 @@ DELETE /api/users/1
 
 ### Directory Structure
 
-```
+``` shell
 app/
 ├── controllers/          # HTTP Controllers
 │   ├── Api.php          # API info endpoint
@@ -244,6 +248,7 @@ Config::set('api.version', 'v2');
 ## Response Format
 
 ### Success Response
+
 ```json
 {
     "success": true,
@@ -257,6 +262,7 @@ Config::set('api.version', 'v2');
 ```
 
 ### Error Response
+
 ```json
 {
     "error": "Validation failed",
@@ -268,6 +274,7 @@ Config::set('api.version', 'v2');
 ```
 
 ### Validation Error (422)
+
 ```json
 {
     "error": "Validation failed",
@@ -285,6 +292,7 @@ Config::set('api.version', 'v2');
 ## Security Features
 
 ### SQL Injection Protection
+
 ```php
 // Automatic protection with prepared statements
 $user = User::where('email', $email)->first();
@@ -295,6 +303,7 @@ $stmt->execute([$email]);
 ```
 
 ### JWT Authentication
+
 ```php
 // Generate token
 $token = AuthMiddleware::generateToken($user);
@@ -307,6 +316,7 @@ $user = $_REQUEST['authenticated_user'];
 ```
 
 ### Rate Limiting
+
 ```php
 // Configure in config.php
 'api' => [
