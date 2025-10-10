@@ -1,0 +1,32 @@
+# Cache directory
+app/storage/cache/*.cache
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+
+# Composer
+/vendor/
+composer.lock
+
+# Node modules (if using frontend tools)
+/node_modules/
+package-lock.json
+
+# Build artifacts
+/build/
+/dist/
