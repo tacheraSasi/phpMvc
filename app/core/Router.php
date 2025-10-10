@@ -112,7 +112,10 @@ class Router
     protected function executeAction($action, $params = [])
     {
         if (is_callable($action)) {
-            call_user_func_array($action, $params);
+            // For closures, pass Request and Response objects
+            $req = new \Luna\Request();
+            $res = new \Luna\Response();
+            call_user_func($action, $req, $res);
         } elseif (is_array($action)) {
             $this->callControllerAction($action, $params);
         }
