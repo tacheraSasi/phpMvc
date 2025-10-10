@@ -28,7 +28,7 @@ class ErrorHandler
         ];
 
         $debug = defined('DEBUG') ? DEBUG : false;
-        
+
         if ($debug) {
             http_response_code(500);
             header('Content-Type: application/json');
@@ -51,7 +51,7 @@ class ErrorHandler
         ];
 
         $debug = defined('DEBUG') ? DEBUG : false;
-        
+
         if ($debug) {
             $error['trace'] = $exception->getTraceAsString();
         }

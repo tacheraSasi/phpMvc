@@ -2,7 +2,7 @@
 
 namespace Luna;
 
-defined('CPATH') OR exit('Access Denied!');
+defined('CPATH') or exit('Access Denied!');
 
 /**
  * Luna class
@@ -22,11 +22,11 @@ class Luna
             case 'db:create':
 
                 /**check if param1 is empty**/
-                if(empty($param1))
+                if (empty($param1))
                     die("\n\rPlease provide a database name\n\r");
 
                 $db = new Database;
-                $query = "create database if not exists ". $param1;
+                $query = "create database if not exists " . $param1;
                 $db->query($query);
 
                 die("\n\rDatabase created successfully\n\r");
@@ -34,18 +34,17 @@ class Luna
             case 'db:table':
 
                 /**check if param1 is empty**/
-                if(empty($param1))
+                if (empty($param1))
                     die("\n\rPlease provide a table name\n\r");
 
                 $db = new Database;
-                $query = "describe ". $param1;
+                $query = "describe " . $param1;
                 $res = $db->query($query);
 
-                if($res)
-                {
+                if ($res) {
 
                     print_r($res);
-                }else{
+                } else {
                     echo "\n\rCould not find data for table: $param1\n\r";
                 }
                 die();
@@ -53,11 +52,11 @@ class Luna
                 break;
             case 'db:drop':
                 /**check if param1 is empty**/
-                if(empty($param1))
+                if (empty($param1))
                     die("\n\rPlease provide a database name\n\r");
 
                 $db = new Database;
-                $query = "drop database ". $param1;
+                $query = "drop database " . $param1;
                 $db->query($query);
 
                 die("\n\rDatabase deleted successfully\n\r");
@@ -66,7 +65,7 @@ class Luna
             case 'db:seed':
                 // code...
                 break;
-            
+
             default:
                 die("\n\rUnknown command $argv[1]");
                 break;
@@ -79,51 +78,49 @@ class Luna
         $classname  = $argv[2] ?? null;
 
         /**check if class name is empty**/
-        if(empty($classname))
+        if (empty($classname))
             die("\n\rPlease provide a class name\n\r");
 
         /**clean class name **/
         $classname = preg_replace("/[^a-zA-Z0-9_]+/", "", $classname);
-        
+
         /**check if class name starts with a number**/
-        if(preg_match("/^[^a-zA-Z_]+/", $classname))
+        if (preg_match("/^[^a-zA-Z_]+/", $classname))
             die("\n\rClass names cant start with a number\n\r");
 
         switch ($mode) {
             case 'make:controller':
 
-                $filename = 'app'.DS.'controllers'.DS.ucfirst($classname) . ".php";
-                if(file_exists($filename))
+                $filename = 'app' . DS . 'controllers' . DS . ucfirst($classname) . ".php";
+                if (file_exists($filename))
                     die("\n\rThat controller already exists\n\r");
-                
-                $sample_file = file_get_contents('app'.DS.'Luna'.DS.'samples'.DS.'controller-sample.php');
+
+                $sample_file = file_get_contents('app' . DS . 'Luna' . DS . 'samples' . DS . 'controller-sample.php');
                 $sample_file = preg_replace("/\{CLASSNAME\}/", ucfirst($classname), $sample_file);
                 $sample_file = preg_replace("/\{classname\}/", strtolower($classname), $sample_file);
 
-                if(file_put_contents($filename, $sample_file))
-                {
+                if (file_put_contents($filename, $sample_file)) {
                     die("\n\rController created successfully\n\r");
-                }else{
+                } else {
                     die("\n\rFailed to create Controller due to an error\n\r");
                 }
                 break;
             case 'make:model':
 
-                $filename = 'app'.DS.'models'.DS.ucfirst($classname) . ".php";
-                if(file_exists($filename))
+                $filename = 'app' . DS . 'models' . DS . ucfirst($classname) . ".php";
+                if (file_exists($filename))
                     die("\n\rThat model already exists\n\r");
 
-                $sample_file = file_get_contents('app'.DS.'Luna'.DS.'samples'.DS.'model-sample.php');
+                $sample_file = file_get_contents('app' . DS . 'Luna' . DS . 'samples' . DS . 'model-sample.php');
                 $sample_file = preg_replace("/\{CLASSNAME\}/", ucfirst($classname), $sample_file);
-                
+
                 /** only add as 's' at the end of table name if it doesnt exist**/
-                if(!preg_match("/s$/", $classname))
+                if (!preg_match("/s$/", $classname))
                     $sample_file = preg_replace("/\{table\}/", strtolower($classname) . 's', $sample_file);
 
-                if(file_put_contents($filename, $sample_file))
-                {
+                if (file_put_contents($filename, $sample_file)) {
                     die("\n\rModel created successfully\n\r");
-                }else{
+                } else {
                     die("\n\rFailed to create Model due to an error\n\r");
                 }
                 break;
@@ -133,7 +130,7 @@ class Luna
             case 'make:seeder':
                 // code...
                 break;
-            
+
             default:
                 die("\n\rUnknown command $argv[1]");
                 break;
@@ -142,7 +139,7 @@ class Luna
 
     public function migrate()
     {
-     echo "\n\rthis is the migrate function\n\r";
+        echo "\n\rthis is the migrate function\n\r";
     }
 
     public function run()
@@ -150,25 +147,25 @@ class Luna
         $host = '127.0.0.1';
         $port = 8000;
         $docroot = 'public';
-        
+
         // Check if public directory exists
         if (!is_dir($docroot)) {
             die("\n\rError: 'public' directory not found. Please run this command from the project root.\n\r");
         }
-        
+
         // Check if index.php exists
         if (!file_exists($docroot . '/index.php')) {
             die("\n\rError: 'public/index.php' not found.\n\r");
         }
-        
+
         echo "\n\rStarting Luna development server...\n\r";
         echo "Server running at: http://{$host}:{$port}\n\r";
         echo "Document root: {$docroot}\n\r";
         echo "Press Ctrl+C to stop the server\n\r\n\r";
-        
+
         // Start PHP built-in server
         $command = "php -S {$host}:{$port} -t {$docroot}";
-        
+
         // Execute the command
         passthru($command);
     }
