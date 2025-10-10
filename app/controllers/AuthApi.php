@@ -106,12 +106,11 @@ class AuthApi
 	{
 		// GET /api/auth/me - Get current user (requires authentication)
 		
-		// This endpoint would typically have auth middleware applied
-		$user = $_REQUEST['authenticated_user'] ?? null;
+		// Apply authentication middleware
+		require_once "../app/core/middleware/AuthMiddleware.php";
+		\Core\Middleware\AuthMiddleware::handle();
 		
-		if (!$user) {
-			$this->sendError('Authentication required', 401);
-		}
+		$user = $_REQUEST['authenticated_user'] ?? null;
 		
 		$this->sendSuccess($user, 'User profile retrieved');
 	}
@@ -119,14 +118,14 @@ class AuthApi
 	public function refresh()
 	{
 		// POST /api/auth/refresh - Refresh token
+		
+		// Apply authentication middleware
+		require_once "../app/core/middleware/AuthMiddleware.php";
+		\Core\Middleware\AuthMiddleware::handle();
+		
 		$user = $_REQUEST['authenticated_user'] ?? null;
 		
-		if (!$user) {
-			$this->sendError('Authentication required', 401);
-		}
-		
 		// Generate new token
-		require_once "../app/core/middleware/AuthMiddleware.php";
 		$token = \Core\Middleware\AuthMiddleware::generateToken($user);
 		
 		$this->sendSuccess(data: [
