@@ -30,6 +30,10 @@ if (phpversion() < $minPHPVersion)
 
 require 'config.php';
 require 'functions.php';
+
+// Load helper trait first
+require 'traits/helper.php';
+
 require 'Database.php';
 require 'Model.php';
 require 'Controller.php';
@@ -39,6 +43,27 @@ require 'Container.php';
 require 'Config.php';
 require 'Validator.php';
 require 'App.php';
+
+// Load utility classes
+require 'utils/StringUtil.php';
+require 'utils/ArrayUtil.php';
+require 'utils/DateUtil.php';
+require 'utils/FileUtil.php';
+require 'utils/CryptoUtil.php';
+
+// Load facades
+require 'facades/Facade.php';
+require 'facades/DB.php';
+require 'facades/Cache.php';
+require 'facades/Response.php';
+require 'facades/Request.php';
+require 'facades/Validator.php';
+
+// Load helper functions
+require 'helpers/api_helpers.php';
+require 'helpers/array_helpers.php';
+require 'helpers/string_helpers.php';
+require 'helpers/http_helpers.php';
 
 // Register error handler for better API error responses
 ErrorHandler::register();

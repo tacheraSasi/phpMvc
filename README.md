@@ -147,12 +147,31 @@ app/
 │   ├── Container.php    # Dependency injection
 │   ├── Config.php       # Configuration manager
 │   ├── ErrorHandler.php # Global error handling
-│   └── middleware/      # Middleware components
-│       ├── CorsMiddleware.php
-│       ├── AuthMiddleware.php
-│       ├── JsonMiddleware.php
-│       └── RateLimitMiddleware.php
+│   ├── middleware/      # Middleware components
+│   │   ├── CorsMiddleware.php
+│   │   ├── AuthMiddleware.php
+│   │   ├── JsonMiddleware.php
+│   │   └── RateLimitMiddleware.php
+│   ├── utils/           # Utility classes
+│   │   ├── StringUtil.php
+│   │   ├── ArrayUtil.php
+│   │   ├── DateUtil.php
+│   │   ├── FileUtil.php
+│   │   └── CryptoUtil.php
+│   ├── facades/         # Static facades
+│   │   ├── DB.php
+│   │   ├── Cache.php
+│   │   ├── Response.php
+│   │   ├── Request.php
+│   │   └── Validator.php
+│   └── helpers/         # Helper functions
+│       ├── api_helpers.php
+│       ├── array_helpers.php
+│       ├── string_helpers.php
+│       └── http_helpers.php
 ├── models/              # Data models
+├── storage/             # Storage directory
+│   └── cache/          # File-based cache
 └── views/               # View templates (for web routes)
 public/
 ├── index.php           # Application entry point
@@ -409,6 +428,257 @@ curl -X POST "http://localhost:8000/api/users" \
 
 curl -X GET "http://localhost:8000/api/auth/me" \
   -H "Authorization: Bearer <your-token>"
+```
+
+## Utils, Facades & Helpers
+
+### Utility Classes
+
+The framework includes several utility classes for common operations:
+
+#### StringUtil
+
+```php
+use Core\Utils\StringUtil;
+
+// String manipulation
+StringUtil::camelCase('hello-world');        // 'helloWorld'
+StringUtil::snakeCase('HelloWorld');         // 'hello_world'
+StringUtil::kebabCase('HelloWorld');         // 'hello-world'
+StringUtil::slug('Hello World PHP');         // 'hello-world-php'
+StringUtil::truncate('Long text...', 10);    // 'Long text...'
+StringUtil::uuid();                          // Generate UUID v4
+StringUtil::random(16);                      // Random string
+StringUtil::mask('1234567890', 4);          // '1234******'
+```
+
+#### ArrayUtil
+
+```php
+use Core\Utils\ArrayUtil;
+
+// Array operations with dot notation
+$data = ['user' => ['name' => 'John', 'email' => 'john@test.com']];
+
+ArrayUtil::get($data, 'user.name');          // 'John'
+ArrayUtil::set($data, 'user.age', 30);       // Set nested value
+ArrayUtil::has($data, 'user.email');         // true
+ArrayUtil::flatten([[1, 2], [3, 4]]);        // [1, 2, 3, 4]
+ArrayUtil::only($arr, ['name', 'email']);    // Filter keys
+ArrayUtil::pluck($users, 'email');           // Extract values
+```
+
+#### DateUtil
+
+```php
+use Core\Utils\DateUtil;
+
+DateUtil::currentDate();                     // Current datetime
+DateUtil::format('2024-01-01', 'd/m/Y');    // Format date
+DateUtil::timeAgo('2024-01-01');            // 'X months ago'
+DateUtil::addDays('2024-01-01', 7);         // Add days
+DateUtil::diffInDays($date1, $date2);       // Days difference
+DateUtil::toIso8601($date);                 // ISO format
+```
+
+#### FileUtil
+
+```php
+use Core\Utils\FileUtil;
+
+FileUtil::get('path/to/file.txt');          // Read file
+FileUtil::put('path/to/file.txt', 'data');  // Write file
+FileUtil::delete('path/to/file.txt');       // Delete file
+FileUtil::extension('file.php');            // 'php'
+FileUtil::humanFileSize(1024000);           // '1000 KB'
+FileUtil::makeDirectory('path/to/dir');     // Create dir
+```
+
+#### CryptoUtil
+
+```php
+use Core\Utils\CryptoUtil;
+
+// Password hashing
+$hash = CryptoUtil::hashPassword('secret');
+CryptoUtil::verifyPassword('secret', $hash);
+
+// Token generation
+CryptoUtil::randomToken(32);                // Secure token
+CryptoUtil::generateApiKey('sk', 32);       // API key
+
+// Encryption
+$encrypted = CryptoUtil::encrypt($data, $key);
+$decrypted = CryptoUtil::decrypt($encrypted, $key);
+
+// JWT
+$token = CryptoUtil::generateJWT($payload, $secret);
+$payload = CryptoUtil::verifyJWT($token, $secret);
+```
+
+### Facades
+
+Facades provide a static interface to underlying services:
+
+#### DB Facade
+
+```php
+use Core\Facades\DB;
+
+// Raw queries
+DB::query("SELECT * FROM users WHERE id = ?", [1]);
+
+// Query builder
+$users = DB::table('users')
+    ->where('status', 'active')
+    ->get();
+
+// Transactions
+DB::beginTransaction();
+try {
+    // ... operations
+    DB::commit();
+} catch (Exception $e) {
+    DB::rollback();
+}
+```
+
+#### Cache Facade
+
+```php
+use Core\Facades\Cache;
+
+// Store data
+Cache::put('key', 'value', 3600);  // TTL in seconds
+
+// Retrieve data
+$value = Cache::get('key', 'default');
+
+// Check existence
+if (Cache::has('key')) { }
+
+// Remember (get or store)
+$data = Cache::remember('key', function() {
+    return expensiveOperation();
+}, 3600);
+
+// Remove data
+Cache::forget('key');
+Cache::flush();  // Clear all
+```
+
+#### Response Facade
+
+```php
+use Core\Facades\Response;
+
+// JSON responses
+Response::json(['data' => $data], 200);
+Response::success($data, 'Success message');
+Response::error('Error message', 400);
+
+// Status-specific responses
+Response::created($data);
+Response::unauthorized('Unauthorized');
+Response::forbidden('Forbidden');
+Response::notFound('Not found');
+Response::validationError($errors);
+
+// File download
+Response::download('/path/to/file.pdf', 'document.pdf');
+```
+
+#### Request Facade
+
+```php
+use Core\Facades\Request;
+
+// Get input
+$value = Request::get('key', 'default');
+$all = Request::all();
+$only = Request::only(['name', 'email']);
+
+// Request information
+Request::method();           // HTTP method
+Request::isGet();           // Check method
+Request::isAjax();          // Check if AJAX
+Request::ip();              // Client IP
+Request::userAgent();       // User agent
+Request::header('X-Custom'); // Get header
+
+// Files
+if (Request::hasFile('avatar')) {
+    $file = Request::file('avatar');
+}
+```
+
+### Helper Functions
+
+Global helper functions for convenience:
+
+#### API Helpers
+
+```php
+// Response helpers
+json_response(['data' => $data], 200);
+success_response($data, 'Success');
+error_response('Error', 400, $errors);
+unauthorized('Unauthorized');
+forbidden('Forbidden');
+not_found('Not found');
+validation_error($errors);
+
+// Pagination
+paginate_response($data, $total, $page, $perPage);
+
+// CORS
+cors_headers(['*'], ['GET', 'POST']);
+```
+
+#### String Helpers
+
+```php
+str_contains($haystack, $needle);    // Check substring
+str_starts_with($str, $prefix);      // Check prefix
+str_ends_with($str, $suffix);        // Check suffix
+str_limit($str, 100, '...');         // Limit length
+str_slug('Hello World');             // 'hello-world'
+str_random(16);                      // Random string
+str_camel('hello-world');            // 'helloWorld'
+str_snake('HelloWorld');             // 'hello_world'
+str_uuid();                          // Generate UUID
+str_mask('1234567890', 4);          // '1234******'
+```
+
+#### Array Helpers
+
+```php
+array_get($arr, 'user.name', 'default');
+array_set($arr, 'user.name', 'John');
+array_has($arr, 'user.email');
+array_only($arr, ['name', 'email']);
+array_except($arr, ['password']);
+array_pluck($users, 'email');
+array_flatten([[1, 2], [3, 4]]);
+array_first($arr, 'default');
+array_last($arr, 'default');
+```
+
+#### HTTP Helpers
+
+```php
+request_method();                    // Get HTTP method
+is_get();                           // Check if GET
+is_post();                          // Check if POST
+is_ajax();                          // Check if AJAX
+is_json_request();                  // Check JSON content
+get_json_input();                   // Get JSON body
+get_header('X-Custom');             // Get header
+get_bearer_token();                 // Extract Bearer token
+client_ip();                        // Get client IP
+current_url();                      // Get current URL
+is_https();                         // Check HTTPS
+base_url('/path');                  // Generate base URL
 ```
 
 ## Contributing
