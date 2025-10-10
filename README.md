@@ -30,6 +30,7 @@ A modern, lightweight PHP MVC framework enhanced with powerful features for buil
 ### **Core Components**
 
 - Enhanced routing system with HTTP verb support
+- **NEW:** Callback routes (closures) for quick API endpoints
 - Request/Response abstraction
 - Database abstraction layer
 - Simple ORM with validation
@@ -183,11 +184,20 @@ public/
 #### Enhanced Router
 
 ```php
-// HTTP verbs support
+// Controller-based routes
 $app->get('api/users', [UserApi::class, 'index']);
 $app->post('api/users', [UserApi::class, 'store']);
 $app->put('api/users/{id}', [UserApi::class, 'update']);
 $app->delete('api/users/{id}', [UserApi::class, 'destroy']);
+
+// NEW: Callback routes (closures)
+$app->get('api/status', function($req, $res) {
+    $res::json(['status' => 'online']);
+});
+
+$app->get('api/users/{id}', function($req, $res, $id) {
+    $res::json(['user_id' => $id]);
+});
 
 // RESTful resource routing
 $app->resource('api/users', UserApi::class);
@@ -196,6 +206,8 @@ $app->resource('api/users', UserApi::class);
 $app->get('api/protected', [ProtectedController::class])
     ->middleware('auth');
 ```
+
+**📚 See [CALLBACK_ROUTES.md](CALLBACK_ROUTES.md) for complete callback route documentation**
 
 #### API Response Helpers
 
