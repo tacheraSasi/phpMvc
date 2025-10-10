@@ -12,14 +12,14 @@ A modern, lightweight PHP MVC framework enhanced with powerful features for buil
 - Comprehensive validation system
 - Standardized API response format
 
-### 🔐 **Security & Authentication**  
+### **Security & Authentication**  
 
 - JWT authentication middleware
 - SQL injection protection with prepared statements
 - Rate limiting middleware
 - Input validation and sanitization
 
-### ⚡ **Developer Experience**
+### **Developer Experience**
 
 - Dependency injection container
 - Middleware system for cross-cutting concerns
@@ -27,7 +27,7 @@ A modern, lightweight PHP MVC framework enhanced with powerful features for buil
 - Environment-aware configuration
 - Fluent validation API
 
-### 🛠 **Core Components**
+### **Core Components**
 
 - Enhanced routing system with HTTP verb support
 - Request/Response abstraction
@@ -427,13 +427,13 @@ MIT License
 
 | Feature | NestJS | This Framework |
 |---------|--------|----------------|
-| Routing | ✅ Decorators | ✅ Fluent API |
-| Validation | ✅ Class Validator | ✅ Rule-based |
-| Middleware | ✅ Injectable | ✅ Static classes |
-| DI Container | ✅ Advanced | ✅ Basic |
-| Authentication | ✅ Guards | ✅ Middleware |
-| Error Handling | ✅ Filters | ✅ Global handler |
-| API Responses | ✅ Interceptors | ✅ Helper methods |
-| CORS | ✅ Built-in | ✅ Middleware |
+| Routing | Decorators | Fluent API |
+| Validation | Class Validator | Rule-based |
+| Middleware | Injectable | Static classes |
+| DI Container | Advanced | Basic |
+| Authentication | Guards | Middleware |
+| Error Handling | Filters | Global handler |
+| API Responses | Interceptors | Helper methods |
+| CORS | Built-in | Middleware |
 
 This framework brings many of the modern API development patterns found in NestJS to the PHP ecosystem while maintaining simplicity and performance.
