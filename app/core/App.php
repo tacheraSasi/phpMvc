@@ -8,6 +8,7 @@ class App
 	private $method 	= 'index';
 	protected static $routes = [];
 	protected $instanceRoutes = [];
+	private static $currentInstance = null;
 
 	private function splitURL()
 	{
@@ -16,51 +17,96 @@ class App
 		return $URL;	
 	}
 
-	// Static route registration
+	// Route registration methods (work for both static and instance calls)
 	public static function get($uri, $action)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->addInstanceRoute('GET', $uri, $action);
+			return self::$currentInstance;
+		}
 		self::addRoute('GET', $uri, $action);
 		return new static;
 	}
 
 	public static function post($uri, $action)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->addInstanceRoute('POST', $uri, $action);
+			return self::$currentInstance;
+		}
 		self::addRoute('POST', $uri, $action);
 		return new static;
 	}
 
 	public static function put($uri, $action)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->addInstanceRoute('PUT', $uri, $action);
+			return self::$currentInstance;
+		}
 		self::addRoute('PUT', $uri, $action);
 		return new static;
 	}
 
 	public static function delete($uri, $action)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->addInstanceRoute('DELETE', $uri, $action);
+			return self::$currentInstance;
+		}
 		self::addRoute('DELETE', $uri, $action);
 		return new static;
 	}
 
 	public static function patch($uri, $action)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->addInstanceRoute('PATCH', $uri, $action);
+			return self::$currentInstance;
+		}
 		self::addRoute('PATCH', $uri, $action);
 		return new static;
 	}
 
 	public static function options($uri, $action)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->addInstanceRoute('OPTIONS', $uri, $action);
+			return self::$currentInstance;
+		}
 		self::addRoute('OPTIONS', $uri, $action);
 		return new static;
 	}
 
 	public static function resource($uri, $controller)
 	{
+		if (self::$currentInstance !== null) {
+			self::$currentInstance->get($uri, [$controller, 'index']);
+			self::$currentInstance->post($uri, [$controller, 'store']);
+			self::$currentInstance->get($uri . '/{id}', [$controller, 'show']);
+			self::$currentInstance->put($uri . '/{id}', [$controller, 'update']);
+			self::$currentInstance->delete($uri . '/{id}', [$controller, 'destroy']);
+			return self::$currentInstance;
+		}
 		self::get($uri, [$controller, 'index']);
 		self::post($uri, [$controller, 'store']);
 		self::get($uri . '/{id}', [$controller, 'show']);
 		self::put($uri . '/{id}', [$controller, 'update']);
 		self::delete($uri . '/{id}', [$controller, 'destroy']);
 		return new static;
+	}
+	
+	public function __call($name, $arguments)
+	{
+		// When called as instance method, set current instance and call static method
+		$validMethods = ['get', 'post', 'put', 'delete', 'patch', 'options', 'resource'];
+		if (in_array($name, $validMethods)) {
+			self::$currentInstance = $this;
+			$result = call_user_func_array([self::class, $name], $arguments);
+			self::$currentInstance = null;
+			return $result;
+		}
+		throw new \Exception("Method {$name} not found");
 	}
 
 	// Instance route registration
@@ -106,10 +152,20 @@ class App
 
 	protected static function addRoute($method, $uri, $action)
 	{
+		// Normalize URI: '/' becomes 'home' (default route)
+		$uri = trim($uri, '/');
+		if ($uri === '' || $uri === '/') {
+			$uri = 'home';
+		}
 		self::$routes[$method][$uri] = $action;
 	}
 	protected function addInstanceRoute($method, $uri, $action)
 	{
+		// Normalize URI: '/' becomes 'home' (default route)
+		$uri = trim($uri, '/');
+		if ($uri === '' || $uri === '/') {
+			$uri = 'home';
+		}
 		$this->instanceRoutes[$method][$uri] = $action;
 	}
 	public function showRoutes(){
@@ -123,6 +179,12 @@ class App
 
 	public function loadController($URL,$req_method)
 	{
+		// Normalize URL: empty string or '/' becomes 'home'
+		$URL = trim($URL, '/');
+		if ($URL === '') {
+			$URL = 'home';
+		}
+		
 		// Handle OPTIONS requests for CORS
 		if ($req_method === 'OPTIONS') {
 			$this->handleCors();
@@ -132,6 +194,13 @@ class App
 		// Check instance routes first
 		if (isset($this->instanceRoutes[$req_method][$URL])) {
 			$action = $this->instanceRoutes[$req_method][$URL];
+			
+			// Handle closure
+			if (is_callable($action)) {
+				$this->executeAction($action, []);
+				return;
+			}
+			
 			$controller_name = $action[0];
 			if(isset($action[1])){
 				$this->method = $action[1];
@@ -143,6 +212,13 @@ class App
 		// Then check static routes
 		if (isset(self::$routes[$req_method][$URL]) ) {
 			$action = self::$routes[$req_method][$URL];
+			
+			// Handle closure
+			if (is_callable($action)) {
+				$this->executeAction($action, []);
+				return;
+			}
+			
 			$controller_name = $action[0];
 			if(isset($action[1])){
 				$this->method = $action[1];
@@ -156,6 +232,13 @@ class App
 			foreach ($this->instanceRoutes[$req_method] ?? [] as $pattern => $action) {
 				$params = $this->matchRoute($pattern, $URL);
 				if ($params !== false) {
+					// Handle closure
+					if (is_callable($action)) {
+						$this->executeAction($action, $params);
+						$matched = true;
+						break;
+					}
+					
 					$controller_name = $action[0];
 					if(isset($action[1])){
 						$this->method = $action[1];
@@ -170,6 +253,13 @@ class App
 				foreach (self::$routes[$req_method] ?? [] as $pattern => $action) {
 					$params = $this->matchRoute($pattern, $URL);
 					if ($params !== false) {
+						// Handle closure
+						if (is_callable($action)) {
+							$this->executeAction($action, $params);
+							$matched = true;
+							break;
+						}
+						
 						$controller_name = $action[0];
 						if(isset($action[1])){
 							$this->method = $action[1];
@@ -202,6 +292,16 @@ class App
 		}
 
 		return false;
+	}
+
+	protected function executeAction($action, $params = [])
+	{
+		if (is_callable($action)) {
+			// For closures, pass Request and Response objects
+			$req = new \Luna\Request();
+			$res = new \Luna\Response();
+			call_user_func($action, $req, $res);
+		}
 	}
 
 	protected function handleCors()

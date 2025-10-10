@@ -52,6 +52,13 @@ spl_autoload_register(function ($classname) {
 		require $coreFile;
 		return;
 	}
+	
+	// Try traits directory (for traits)
+	$traitFile = "../app/core/traits/".lcfirst($classname).".php";
+	if(file_exists($traitFile)) {
+		require $traitFile;
+		return;
+	}
 });
 
 /**  Valid PHP Version? **/
