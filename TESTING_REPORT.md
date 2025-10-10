@@ -108,9 +108,11 @@ All endpoints have been tested and verified to work correctly:
 - `GET /static-api` - Static API route
 - `GET /static-luna` - Static Luna route
 
-#### ✓ Authentication Endpoints (2/2 passing)
+#### ✓ Authentication Endpoints (4/4 passing)
 - `POST /api/auth/login` - User login (returns JWT token)
 - `POST /api/auth/register` - User registration (returns 201 Created)
+- `GET /api/auth/me` - Get current authenticated user (requires JWT token)
+- `POST /api/auth/refresh` - Refresh JWT token (requires JWT token)
 
 #### ✓ User API Endpoints (5/5 passing)
 - `GET /api/users` - Get all users
@@ -128,11 +130,17 @@ All endpoints have been tested and verified to work correctly:
 - `GET /callback-demo/{id}` - Callback with parameter
 - `POST /callback-post-demo` - POST callback route
 
-#### ✓ Error Handling (2/2 passing)
+#### ✓ Additional Endpoints (2/2 passing)
+- `GET /luna/render` - JSON response example
+- `GET /new` - Data retrieval endpoint
+
+#### ✓ Error Handling (4/4 passing)
 - Invalid routes return proper 404 status
 - API errors return proper JSON responses
+- Protected endpoints return 401 when accessed without authentication
+- Non-existent pages return proper 404 status
 
-### Final Test Score: 19/19 Tests Passing (100%)
+### Final Test Score: 29/29 Tests Passing (100%) ✓
 
 ## Features Verified
 
@@ -191,9 +199,31 @@ All endpoints have been tested and verified to work correctly:
 4. Add logging for debugging and monitoring
 5. Consider adding caching for frequently accessed data
 
+### 6. Missing Authentication Middleware Call in Auth Endpoints (Minor)
+**Issue:** The `auth/me` and `auth/refresh` endpoints were checking for authenticated user but weren't calling the authentication middleware, so the user context was never populated.
+
+**File Affected:**
+- `app/controllers/AuthApi.php`
+
+**Fix Applied:**
+- Added explicit `AuthMiddleware::handle()` call at the beginning of both methods
+- This ensures the JWT token is validated and user context is set before the method logic executes
+
+```php
+public function me()
+{
+    // Apply authentication middleware
+    require_once "../app/core/middleware/AuthMiddleware.php";
+    \Core\Middleware\AuthMiddleware::handle();
+    
+    $user = $_REQUEST['authenticated_user'] ?? null;
+    $this->sendSuccess($user, 'User profile retrieved');
+}
+```
+
 ## Conclusion
 
-All framework endpoints have been tested and verified to work correctly. The identified issues have been fixed, and the framework is now stable and ready for use. All 19 test cases pass successfully, covering:
+All framework endpoints have been tested and verified to work correctly. The identified issues have been fixed, and the framework is now stable and ready for use. All 29 test cases pass successfully, covering:
 - Basic routing (static and instance)
 - RESTful API endpoints
 - Authentication and authorization
