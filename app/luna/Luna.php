@@ -145,11 +145,42 @@ class Luna
      echo "\n\rthis is the migrate function\n\r";
     }
 
+    public function run()
+    {
+        $host = '127.0.0.1';
+        $port = 8000;
+        $docroot = 'public';
+        
+        // Check if public directory exists
+        if (!is_dir($docroot)) {
+            die("\n\rError: 'public' directory not found. Please run this command from the project root.\n\r");
+        }
+        
+        // Check if index.php exists
+        if (!file_exists($docroot . '/index.php')) {
+            die("\n\rError: 'public/index.php' not found.\n\r");
+        }
+        
+        echo "\n\rStarting Luna development server...\n\r";
+        echo "Server running at: http://{$host}:{$port}\n\r";
+        echo "Document root: {$docroot}\n\r";
+        echo "Press Ctrl+C to stop the server\n\r\n\r";
+        
+        // Start PHP built-in server
+        $command = "php -S {$host}:{$port} -t {$docroot}";
+        
+        // Execute the command
+        passthru($command);
+    }
+
     public function help()
     {
         echo "
 
     Luna v$this->version Command Line Tool
+
+    Server
+      run                Start the Luna development server (http://127.0.0.1:8000)
 
     Database
       db:create          Create a new database schema.

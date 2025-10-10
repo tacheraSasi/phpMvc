@@ -27,7 +27,9 @@ class ErrorHandler
             'line' => $line
         ];
 
-        if (DEBUG) {
+        $debug = defined('DEBUG') ? DEBUG : false;
+        
+        if ($debug) {
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode($error, JSON_PRETTY_PRINT);
@@ -48,14 +50,16 @@ class ErrorHandler
             'line' => $exception->getLine()
         ];
 
-        if (DEBUG) {
+        $debug = defined('DEBUG') ? DEBUG : false;
+        
+        if ($debug) {
             $error['trace'] = $exception->getTraceAsString();
         }
 
         http_response_code(500);
         header('Content-Type: application/json');
 
-        if (DEBUG) {
+        if ($debug) {
             echo json_encode($error, JSON_PRETTY_PRINT);
         } else {
             echo json_encode(['error' => 'Internal Server Error']);
